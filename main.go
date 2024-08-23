@@ -23,7 +23,6 @@ func loadPlugin(path string) error {
 		return err
 	}
 
-	fmt.Printf("Type: %T\n", newCmdSymbol)
 
 	newCmd, ok := newCmdSymbol.(func() command_interface.Command)
 	if !ok {
@@ -31,8 +30,8 @@ func loadPlugin(path string) error {
 	}
 
 	command := newCmd()
-	fmt.Printf(command.Alias())
-	commandName := command.Alias()//strings.TrimSuffix(path, ".so")
+
+	commandName := command.Alias()
 	commands[commandName] = command
 	return nil
 }
@@ -57,7 +56,6 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println(projectName+" with Plugins - Type 'exit' to quit.")
-	fmt.Println(commands)
 	for {
 		fmt.Print(shellPrompt)
 		input, err := reader.ReadString('\n')
@@ -67,22 +65,55 @@ func main() {
 		}
 
 		input = strings.TrimSpace(input)
-		if input == "exit" {
-			fmt.Println("Exiting "+projectName+".....")
-			break
-		}
 
+		
+		
+	
 		args := strings.Fields(input)
 		if len(args) == 0 {
 			continue
 		}
 
-		commandName := args[0]
-		command, exists := commands[commandName]
-		if exists {
-			command.Execute(args[1:])
+		// Embedded Commmands
+		if args[0] == "exit" {
+			fmt.Println("Exiting "+projectName+".....")
+			break
+		} else if args[0] == "help" {
+			if len(args) == 1 {
+				// Help with no args should call help but pass in the "short" parameter
+				fmt.Println("Commands:")
+				// for through all commands and display short help
+				for _, cmd := range commands {
+					fmt.Println(cmd.Alias()," - ",cmd.Help(true,args[1:]))
+					//fmt.Println("Detailed Help:", cmd.Help(false, nil))
+				}
+				//fmt.Println(command.Help(true))
+			} else {
+				// Help with an arg should just call that modules help with no parameter
+				// Process Plugin Commands
+				commandName := args[1]
+				command, exists := commands[commandName]
+				if exists {
+					if len(args)>=2 {
+						fmt.Println(command.Help(false, args[2:]))
+					} else {
+						
+					}
+				} else {
+					fmt.Println("Unknown plugin:", commandName)
+				}
+			}
 		} else {
-			fmt.Println("Unknown command:", commandName)
+			// Process Plugin Commands
+			commandName := args[0]
+			command, exists := commands[commandName]
+			if exists {
+				command.Execute(args[1:])
+			} else {
+				fmt.Println("Unknown command:", commandName)
+			}
 		}
+
+		
 	}
 }

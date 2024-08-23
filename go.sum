@@ -1,2 +1,6 @@
 github.com/Control-Override/GhostCommandInterface v0.0.0-20240823012502-861ef3d534e7 h1:fsLmNuLA1wSrlcZQi0Ei5TwdLagdX33/XirTjeoYUq4=
 github.com/Control-Override/GhostCommandInterface v0.0.0-20240823012502-861ef3d534e7/go.mod h1:ao4CtsOsgwy8fnNlxGLsLBYxrFveSRrIwz+QrNZeIhk=
+github.com/Control-Override/GhostCommandInterface v0.0.0-20240823022613-86f9219b6daa h1:a0qNTPYEy9gGfyhI/wIkdZw/eU/Nlm5RrZBh93ioQR4=
+github.com/Control-Override/GhostCommandInterface v0.0.0-20240823022613-86f9219b6daa/go.mod h1:ao4CtsOsgwy8fnNlxGLsLBYxrFveSRrIwz+QrNZeIhk=
+github.com/Control-Override/GhostCommandInterface v0.0.0-20240823023409-73366838a6a4 h1:G0ov2uqo6veu0GpNOydYaNq0Gv73JqHOiANa/dWkrAs=
+github.com/Control-Override/GhostCommandInterface v0.0.0-20240823023409-73366838a6a4/go.mod h1:ao4CtsOsgwy8fnNlxGLsLBYxrFveSRrIwz+QrNZeIhk=
