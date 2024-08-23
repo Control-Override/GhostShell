@@ -6,13 +6,11 @@ import (
 	"os"
 	"plugin"
 	"strings"
+	"github.com/Control-Override/GhostCommandInterface"
 )
 
-type Command interface {
-	Execute(args []string)
-}
 
-var commands = map[string]Command{}
+var commands = map[string] command_interface.Command{}
 
 func loadPlugin(path string) error {
 	p, err := plugin.Open(path)
@@ -27,18 +25,22 @@ func loadPlugin(path string) error {
 
 	fmt.Printf("Type: %T\n", newCmdSymbol)
 
-	newCmd, ok := newCmdSymbol.(func() Command)
+	newCmd, ok := newCmdSymbol.(func() command_interface.Command)
 	if !ok {
 		return fmt.Errorf("invalid plugin signature")
 	}
 
 	command := newCmd()
-	commandName := strings.TrimSuffix(path, ".so")
+	fmt.Printf(command.Alias())
+	commandName := command.Alias()//strings.TrimSuffix(path, ".so")
 	commands[commandName] = command
 	return nil
 }
 
 func main() {
+	// Some config stuff we will move to a better place later
+	projectName := "Ghost Shell"
+	shellPrompt := "GhostShell> "
 	// Load plugins from a folder
 	pluginFolder := "./plugins"
 	pluginFiles, _ := os.ReadDir(pluginFolder)
@@ -54,10 +56,10 @@ func main() {
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Go Shell with Plugins - Type 'exit' to quit.")
-
+	fmt.Println(projectName+" with Plugins - Type 'exit' to quit.")
+	fmt.Println(commands)
 	for {
-		fmt.Print("go-shell> ")
+		fmt.Print(shellPrompt)
 		input, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error reading input:", err)
@@ -66,7 +68,7 @@ func main() {
 
 		input = strings.TrimSpace(input)
 		if input == "exit" {
-			fmt.Println("Exiting Go Shell...")
+			fmt.Println("Exiting "+projectName+".....")
 			break
 		}
 
